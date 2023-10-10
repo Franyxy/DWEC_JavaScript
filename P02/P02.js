@@ -5,23 +5,38 @@ function comienzo() {
 }
 function Comprobar(){
     var VstNif = document.formulario.nif.value;
-    var VstMensaje = "";
-    var VinOpcion=esNIF(VstNif);
-    switch (VinOpcion) {
+    var VstCif = document.formulario.cif.value;
+    var VstMensaje= "";var VstMensaje1= "";
+    var VinOpcion1=esNIF(VstNif);
+    switch (VinOpcion1) {
         case 1:
-            VstMensaje="NIE Correcto"
+            VstMensaje="NIF Correcto"
             break;  
         case 2:
-            VstMensaje="NIE Incorrecto - Caracter de Control No Válido"
+            VstMensaje="NIF Incorrecto - Caracter de Control No Válido"
             break;
         case 3:
-            VstMensaje="NIE en proceso"
+            VstMensaje="Se han introducido de 6 a 8 digitos. Inválido"
             break;
         case 4:
             VstMensaje="Dato introducido No Válido"
             break;
     }
     document.formulario.mensaje.value = VstMensaje;
+
+    var VinOpcion2=esCIF(VstCif);
+    switch (VinOpcion2) {
+        case 1:
+            VstMensaje1="CIF Correcto"
+            break;  
+        case 2:
+            VstMensaje1="CIF Incorrecto - Caracter de Control No Válido"
+            break;
+        case 3:
+            VstMensaje1="CIF introducido No Válido"
+            break;
+    }
+    document.formulario.mensaje1.value = VstMensaje1;
 }
 
 function esNIF(VstNif) {
@@ -29,8 +44,10 @@ function esNIF(VstNif) {
     VstNif=VstNif.toUpperCase();
     let VarrNif=VstNif.split("");
     let VarrLetras=['T','R','W','A','G','M','Y','F','P','D','X','B','N','J','Z','S','Q','V','H','L','C','K','E'];
-    if(!VerificarNif(VarrNif))
-        return 4; 
+    if(VerificarNif(VarrNif)==4)
+        return 4
+    else if(VerificarNif(VarrNif)==3)
+        return 3;
     if(VstCaracteres.includes(VarrNif[0]))
         VarrNif[0]=0
     else if(VarrNif[0]=='Y')
@@ -64,7 +81,62 @@ function VerificarNif(VarrNif){
                 }
             }
         }
+    }else if(VarrNif.length>5&&VarrNif.length<9){
+        for(let i=0;i<VarrNif.length;i++){
+            if(VstNum.includes(VarrNif[i])){
+                let VinAux1=parseInt(concArray(VarrNif),10);
+                if(VinAux1>100000){
+                    return 3;
+                }
+            }
+        }
+    }
+    return 4;
+
+}
+
+function esCIF(VstCif){
+    VstCif=VstCif.toUpperCase();
+    let VarrCif=VstCif.split("");
+    console.log(VarrCif);
+    let sumpar=0;let VinAuxSum=0;let sumimpar=0;
+    if(!comprobarCif(VarrCif))
+        return 3;
+    for(let i=1;i<8;i=i+2){
+        VinAux=parseInt(VarrCif[i],10)*2;
+        if(VinAux<=9){
+            sumpar=sumpar+VinAux;
+        }else{
+            VstAux=VinAux.toString();
+
+            VarrAux=VstAux.split("");
+            VinAuxSum=VarrAux[0]+VarrAux[1];
+            VinAuxSum=parseInt(VinAuxSum,10);
+            sumpar=sumpar+VinAuxSum;
+        }
+    }
+    for(let j=2;j<9;j=j+2)
+        console.log(parseInt(VarrCif[j],10))
+        sumimpar=sumimpar+parseInt(VarrCif[j],10);
+    
+    
+    
+    
+    
+}
+
+function comprobarCif(VarrCif){
+    let VstCaracteres1="AHJUV";
+    let VstCaracteres2="PQRSW";
+    let VstNum="0123456789";
+    if(VarrCif.length==9){
+        if(VstCaracteres1.includes(VarrCif[0])||VstCaracteres2.includes(VarrCif[0])){
+            for(let i=1;i<VarrCif.length;i++){
+                if(VstNum.includes(VarrCif[i])){
+                    return true;
+                }
+            }
+        }
     }
     return false;
-
 }
