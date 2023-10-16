@@ -6,7 +6,10 @@ function comienzo() {
 function Comprobar(){
     var VstNif = document.formulario.nif.value;
     var VstCif = document.formulario.cif.value;
-    var VstMensaje= "";var VstMensaje1= "";
+    var VstCodBanco = document.formulario.codbanco.value;
+    var VstNumSucursal = document.formulario.numsucursal.value;
+    var VstNumCuenta = document.formulario.numcuenta.value;
+    var VstMensaje= "";var VstMensaje1= "";var VstMensaje2= "";
     var VinOpcion1=esNIF(VstNif);
     switch (VinOpcion1) {
         case 1:
@@ -37,6 +40,15 @@ function Comprobar(){
             break;
     }
     document.formulario.mensaje1.value = VstMensaje1;
+
+    var VinOpcion3=esCodigoControl(VstCodBanco,VstNumSucursal,VstNumCuenta);
+    if(VinOpcion3==1){
+        VstMensaje2="Algunos campos introducidos no son correctos";
+    }else{
+        VstMensaje2="El codigo de control es: "+VinOpcion3;
+    }
+    document.formulario.mensaje2.value = VstMensaje2;
+
 }
 
 function esNIF(VstNif) {
@@ -155,3 +167,80 @@ function comprobarCif(VarrCif){
     }
     return false;
 }
+
+function esCodigoControl(VstCodBanco,VstNumSucursal,VstNumCuenta){
+    let VarrCodBanco=VstCodBanco.split("");
+    let VarrNumSucursal=VstNumSucursal.split("");
+    let VarrNumCuenta=VstNumCuenta.split("");
+    if(verificarCodBanco(VarrCodBanco)==false||verificarNumSucursal(VarrNumSucursal)==false||verificarNumCuenta(VarrNumCuenta)==false){
+        return 1;
+    }else{
+        let numero1=0;let numero2=0;let numero3=0;let rest=0;let restnum3=0;
+        numero1=VarrCodBanco[0]*4+VarrCodBanco[1]*8+VarrCodBanco[2]*5+VarrCodBanco[3]*10;
+        numero2=VarrNumSucursal[0]*9+VarrNumSucursal[1]*7+VarrNumSucursal[2]*3+VarrNumSucursal[3]*6;
+        rest=11-((numero1+numero2)%11);
+        if(rest==10){
+            rest==1;
+        }else if(rest==11){
+            rest=0;
+        }
+
+        numero3=VarrNumCuenta[0]*1+VarrNumCuenta[1]*2+VarrNumCuenta[2]*4+VarrNumCuenta[3]*8+VarrNumCuenta[4]*5+VarrNumCuenta[5]*10+VarrNumCuenta[6]*9+VarrNumCuenta[7]*7+VarrNumCuenta[8]*3+VarrNumCuenta[9]*6;
+        
+        restnum3=11-(numero3%11);
+
+        if(restnum3==10){
+            restnum3==1;
+        }else if(restnum3==11){
+            restnum3=0;
+        }
+        let resultado="";
+        let strest=rest.toString();
+        let strrestnum3=restnum3.toString();
+        resultado=strest+strrestnum3;
+        console.log(resultado);
+
+        return resultado;
+    }
+
+}
+
+
+
+function verificarCodBanco(VarrCodBanco){
+    let VstNum="0123456789";
+    if(VarrCodBanco.length==4){
+        for(let i=0;i<VarrCodBanco.length;i++){
+            if(VstNum.includes(VarrCodBanco[i])){
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+function verificarNumSucursal(VarrNumSucursal){
+    let VstNum="0123456789";
+    if(VarrNumSucursal.length==4){
+        for(let i=0;i<VarrNumSucursal.length;i++){
+            if(VstNum.includes(VarrNumSucursal[i])){
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+
+function verificarNumCuenta(VarrNumCuenta){
+    let VstNum="0123456789";
+    if(VarrNumCuenta.length==10){
+        for(let i=0;i<VarrNumCuenta.length;i++){
+            if(VstNum.includes(VarrNumCuenta[i])){
+                return true;
+            }
+        }
+    }
+    return false;
+}
+    
